@@ -11,7 +11,14 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace BKey.Utils.CSharpToTypeScript;
-public class TypeScriptGeneratorService
+
+public interface ITypeScriptGeneratorService
+{
+    TypeScriptGenerationResult Generate(Type rootType);
+    TypeScriptGenerationResult Generate<T>();
+}
+
+public class TypeScriptGeneratorService : ITypeScriptGeneratorService
 {
     private readonly JsonNamingPolicy _classNamingPolicy;
     private readonly JsonNamingPolicy _propertyNamingPolicy;
@@ -80,7 +87,8 @@ public class TypeScriptGeneratorService
         {
             var propType = Nullable.GetUnderlyingType(prop.PropertyType)
                            ?? prop.PropertyType;
-            if (!IsSimple(propType)) {
+            if (!IsSimple(propType))
+            {
                 ProcessType(visited, files, propType);
             }
         }

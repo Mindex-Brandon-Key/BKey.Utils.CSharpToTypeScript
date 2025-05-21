@@ -24,4 +24,16 @@ public static class TypeScriptGenerationResultExtensions
         }
         return result;
     }
+
+    public static async Task<TypeScriptGenerationResult> SaveAsync(this TypeScriptGenerationResult result, string path = ".")
+    {
+        var tasks = result.Files.Select(async file =>
+            {
+                using var stream = File.Create(Path.Join(path, file.FileName));
+                using var writer = new StreamWriter(stream);
+                await writer.WriteAsync(file.Content);
+            });
+        await Task.WhenAll(tasks);
+        return result;
+    }
 }
