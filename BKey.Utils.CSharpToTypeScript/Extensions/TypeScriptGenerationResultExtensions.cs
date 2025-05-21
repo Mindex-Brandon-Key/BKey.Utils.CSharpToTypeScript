@@ -18,6 +18,10 @@ public static class TypeScriptGenerationResultExtensions
     {
         foreach (var file in result.Files)
         {
+            if (!Path.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
             using var stream = File.Create(Path.Join(path, file.FileName));
             using var writer = new StreamWriter(stream);
             writer.Write(file.Content);
@@ -29,6 +33,10 @@ public static class TypeScriptGenerationResultExtensions
     {
         var tasks = result.Files.Select(async file =>
             {
+                if (!Path.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
                 using var stream = File.Create(Path.Join(path, file.FileName));
                 using var writer = new StreamWriter(stream);
                 await writer.WriteAsync(file.Content);
